@@ -1,28 +1,20 @@
 import express from 'express';
-import Product from '../models/Product.js';
+import {
+  createProduct,
+  getProducts,
+  getProduct,
+  updateProduct,
+  deleteProduct
+} from '../controllers/productController.js';
+import { protect, adminOnly } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// 🔸 GET all products
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching products' });
-  }
-});
+router.get('/', getProducts);
+router.get('/:id', getProduct);
 
-router.post('/', async (req, res) => {
-  const { name, description, price, category, imageUrl, stock } = req.body;
-
-  try {
-    const newProduct = new Product({ name, description, price, category, imageUrl, stock });
-    await newProduct.save();
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(400).json({ message: 'Error creating product', error });
-  }
-});
+router.post('/', protect, adminOnly, createProduct);
+router.put('/:id', protect, adminOnly, updateProduct);
+router.delete('/:id', protect, adminOnly, deleteProduct);
 
 export default router;
