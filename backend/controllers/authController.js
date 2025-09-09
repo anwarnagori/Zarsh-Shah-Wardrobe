@@ -69,10 +69,12 @@ export const forgotPassword = async (req, res) => {
 
     const resetToken = crypto.randomBytes(32).toString('hex');
     user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.resetPasswordExpire = Date.now() + 60 * 60 * 1000; // 60 minutes
     await user.save();
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    console.log("Reset URL:", resetUrl);
 
     await sendEmail(
       user.email,
