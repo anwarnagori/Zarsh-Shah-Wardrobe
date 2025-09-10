@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/User.js';
 import sendEmail from '../utils/sendEmail.js';
+import emailTemplate from '../utils/emailTemplate.js';
 
 const makeToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
@@ -18,7 +19,12 @@ export const register = async (req, res) => {
     await sendEmail(
       user.email,
       'Welcome to Zarsh Shah Wardrobe 🎉',
-      `<h3>Hi ${user.name},</h3><p>Thank you for signing up! We’re glad to have you with us.</p>`
+      emailTemplate(
+        "Welcome, " + user.name + " 👋",
+        "Thank you for signing up! We're thrilled to have you join Zarsh Shah Wardrobe. Explore our collection and enjoy shopping with us.",
+        "Start Shopping",
+        process.env.CLIENT_URL
+      )
     );
 
     res.status(201).json({
@@ -43,9 +49,14 @@ export const login = async (req, res) => {
     await sendEmail(
       user.email,
       'Login Alert 🔐',
-      `<p>Hi ${user.name},</p>
-       <p>You have successfully logged in on <b>${new Date().toLocaleString()}</b>.</p>`
+      emailTemplate(
+        "Login Successful",
+        `Hi ${user.name},<br>You have successfully logged in on <b>${new Date().toLocaleString()}</b>.`,
+        "Visit Dashboard",
+        process.env.CLIENT_URL + "/dashboard"
+      )
     );
+
 
     res.json({
       user: { _id: user._id, name: user.name, email: user.email, role: user.role },
@@ -79,9 +90,14 @@ export const forgotPassword = async (req, res) => {
     await sendEmail(
       user.email,
       'Password Reset Request 🔑',
-      `<p>Hi ${user.name},</p>
-       <p>Click <a href="${resetUrl}">here</a> to reset your password. This link will expire in 10 minutes.</p>`
+      emailTemplate(
+        "Reset Your Password",
+        `Hi ${user.name},<br>Click the button below to reset your password. This link will expire in 1 hour.`,
+        "Reset Password",
+        resetUrl
+      )
     );
+
 
     res.status(200).json({
       message: 'Password reset link sent to your email'
@@ -113,8 +129,12 @@ export const resetPassword = async (req, res) => {
     await sendEmail(
       user.email,
       'Password Reset Successful ✅',
-      `<p>Hi ${user.name},</p>
-       <p>Your password has been updated successfully. If you didn’t request this, please contact support immediately.</p>`
+      emailTemplate(
+        "Password Updated",
+        `Hi ${user.name},<br>Your password has been updated successfully. If you didn’t request this, please contact our support immediately.`,
+        "Login Now",
+        process.env.CLIENT_URL + "/login"
+      )
     );
 
     res.status(200).json({ message: 'Password reset successful, you can now login' });
