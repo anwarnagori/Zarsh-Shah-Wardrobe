@@ -5,6 +5,7 @@ import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/api/auth', authRoutes);
+app.use("/api/products", productRoutes);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
