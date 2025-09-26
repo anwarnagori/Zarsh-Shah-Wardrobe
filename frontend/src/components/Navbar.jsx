@@ -1,96 +1,68 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FiSearch, FiShoppingCart } from "react-icons/fi";
+import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleSearch = () => {
     if (query.trim()) {
-      navigate(`/shop?q=${query}`);
-      setQuery("");
+      navigate(`/search?q=${encodeURIComponent(query)}`);
     }
   };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <nav className="hidden md:flex space-x-6 text-sm">
-            <Link to="/" className="hover:text-amber-600">
-              Home
-            </Link>
-            <Link to="/catalogs" className="hover:text-amber-600">
-              All Catalogs
-            </Link>
-            <Link to="/size-guide" className="hover:text-amber-600">
-              Size Guide
-            </Link>
+        <div className="flex justify-between items-center h-16">
+          {/* Left side links */}
+          <nav className="hidden md:flex space-x-6 text-sm text-gray-700">
+            <Link to="/">Home</Link>
+            <Link to="/catalogs">All Catalogs</Link>
+            <Link to="/size-guide">Size Guide</Link>
           </nav>
 
+          {/* Center Logo */}
           <Link to="/" className="text-2xl font-serif text-amber-600">
             Zarsh Shah Wardrobe
           </Link>
 
+          {/* Right side */}
           <div className="flex items-center space-x-4">
-            <form onSubmit={handleSearch} className="relative hidden sm:block">
+            <div className="relative">
               <input
+                type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
+                placeholder="Search"
                 className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
               />
               <button
-                type="submit"
-                className="absolute right-2 top-2 text-gray-500"
+                onClick={handleSearch}
+                className="absolute right-2 top-2 text-gray-500 hover:text-amber-600"
               >
-                <FiSearch />
+                <FiSearch size={18} />
               </button>
-            </form>
+            </div>
 
-            <button className="text-xl">
-              <FiShoppingCart />
+            <button className="text-gray-700 hover:text-amber-600">
+              <FiShoppingCart size={20} />
             </button>
 
             {user ? (
-              <>
-                <button
-                  onClick={() => navigate("/dashboard")}
-                  className="text-sm bg-amber-600 text-white px-3 py-1 rounded-md"
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm border px-3 py-1 rounded-md"
-                >
-                  Logout
-                </button>
-              </>
+              <button
+                onClick={logout}
+                className="text-gray-700 hover:text-amber-600"
+              >
+                <FiUser size={20} />
+              </button>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="text-sm px-3 py-1 border rounded-md"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="text-sm px-3 py-1 bg-amber-600 text-white rounded-md"
-                >
-                  Sign up
-                </Link>
-              </>
+              <Link to="/login" className="text-gray-700 hover:text-amber-600">
+                <FiUser size={20} />
+              </Link>
             )}
           </div>
         </div>
