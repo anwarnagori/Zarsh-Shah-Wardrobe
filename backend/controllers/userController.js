@@ -19,11 +19,11 @@ export const updateUserProfile = async (req, res) => {
 
     // Check if email is already taken by another user
     if (email) {
-      const existingUser = await User.findOne({ 
-        email, 
-        _id: { $ne: userId } 
+      const existingUser = await User.findOne({
+        email,
+        _id: { $ne: userId }
       });
-      
+
       if (existingUser) {
         return res.status(400).json({ message: 'Email already in use' });
       }
@@ -77,7 +77,7 @@ export const getUserAddresses = async (req, res) => {
 export const addUserAddress = async (req, res) => {
   try {
     const { name, phone, address, city, state, postalCode, country, isDefault } = req.body;
-    
+
     const newAddress = {
       name,
       phone,
@@ -90,7 +90,7 @@ export const addUserAddress = async (req, res) => {
     };
 
     const user = await User.findById(req.user._id);
-    
+
     // If this is set as default, make all other addresses non-default
     if (isDefault) {
       user.addresses.forEach(addr => {
@@ -115,7 +115,7 @@ export const updateUserAddress = async (req, res) => {
 
     const user = await User.findById(req.user._id);
     const addressIndex = user.addresses.findIndex(addr => addr._id.toString() === addressId);
-    
+
     if (addressIndex === -1) {
       return res.status(404).json({ message: 'Address not found' });
     }

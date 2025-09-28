@@ -5,7 +5,7 @@ export const getCategories = async (req, res) => {
   try {
     const { isActive } = req.query;
     const filter = {};
-    
+
     if (isActive !== undefined) {
       filter.isActive = isActive === 'true';
     }
@@ -23,7 +23,7 @@ export const getCategories = async (req, res) => {
 export const getCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
-    
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
@@ -85,7 +85,7 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
-    
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }

@@ -52,9 +52,9 @@ export const addToCart = async (req, res) => {
 
     // Check if product already exists in cart
     const existingItem = cart.products.find(
-      item => item.product.toString() === productId && 
-      item.size === size && 
-      item.color === color
+      item => item.product.toString() === productId &&
+        item.size === size &&
+        item.color === color
     );
 
     if (existingItem) {

@@ -21,16 +21,16 @@ export const createOrder = async (req, res) => {
 
     for (const cartItem of cart.products) {
       const product = cartItem.product;
-      
+
       if (product.status !== 'active') {
-        return res.status(400).json({ 
-          message: `Product ${product.name} is not available` 
+        return res.status(400).json({
+          message: `Product ${product.name} is not available`
         });
       }
 
       if (product.stock < cartItem.quantity) {
-        return res.status(400).json({ 
-          message: `Insufficient stock for ${product.name}` 
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}`
         });
       }
 
@@ -85,7 +85,7 @@ export const getUserOrders = async (req, res) => {
   try {
     const { page = 1, limit = 10, status } = req.query;
     const filter = { user: req.user._id };
-    
+
     if (status) {
       filter.status = status;
     }
@@ -159,7 +159,7 @@ export const getAllOrders = async (req, res) => {
   try {
     const { page = 1, limit = 10, status, user } = req.query;
     const filter = {};
-    
+
     if (status) filter.status = status;
     if (user) filter.user = user;
 

@@ -1,23 +1,14 @@
 import Product from '../../models/Product.js';
 
-// export const createProduct = async (req, res) => {
-//   try {
-//     const product = await Product.create(req.body);
-//     res.status(201).json(product);
-//   } catch (e) {
-//     res.status(400).json({ message: e.message });
-//   }
-// };
-
 export const createProduct = async (req, res) => {
   try {
     const product = await Product.create(req.body);
     res.status(201).json(product);
   } catch (e) {
     console.error("❌ Product upload error:", e.errors || e.message);
-    res.status(400).json({ 
-      message: e.message, 
-      errors: e.errors ? Object.values(e.errors).map(err => err.message) : [] 
+    res.status(400).json({
+      message: e.message,
+      errors: e.errors ? Object.values(e.errors).map(err => err.message) : []
     });
   }
 };

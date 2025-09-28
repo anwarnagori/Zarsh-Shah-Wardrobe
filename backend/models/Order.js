@@ -2,48 +2,48 @@ import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
   {
-    user: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User', 
-      required: true 
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
     },
-    orderNumber: { 
-      type: String, 
-      unique: true, 
-      required: true 
+    orderNumber: {
+      type: String,
+      unique: true,
+      required: true
     },
     products: [{
-      product: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Product', 
-        required: true 
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
       },
-      quantity: { 
-        type: Number, 
+      quantity: {
+        type: Number,
         required: true,
         min: 1
       },
-      price: { 
-        type: Number, 
-        required: true 
+      price: {
+        type: Number,
+        required: true
       },
-      size: { 
+      size: {
         type: String,
         default: ''
       },
-      color: { 
+      color: {
         type: String,
         default: ''
       }
     }],
-    totalAmount: { 
-      type: Number, 
-      required: true 
+    totalAmount: {
+      type: Number,
+      required: true
     },
-    status: { 
-      type: String, 
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'], 
-      default: 'pending' 
+    status: {
+      type: String,
+      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+      default: 'pending'
     },
     shippingAddress: {
       name: { type: String, required: true },
@@ -55,8 +55,8 @@ const orderSchema = new mongoose.Schema(
       postalCode: { type: String, required: true },
       country: { type: String, required: true }
     },
-    paymentMethod: { 
-      type: String, 
+    paymentMethod: {
+      type: String,
       required: true,
       enum: ['cash_on_delivery', 'credit_card', 'debit_card', 'bank_transfer']
     },
@@ -65,7 +65,7 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'paid', 'failed', 'refunded'],
       default: 'pending'
     },
-    notes: { 
+    notes: {
       type: String,
       default: ''
     }
@@ -74,7 +74,7 @@ const orderSchema = new mongoose.Schema(
 );
 
 // Generate order number before saving
-orderSchema.pre('save', async function(next) {
+orderSchema.pre('save', async function (next) {
   if (!this.orderNumber) {
     const count = await mongoose.model('Order').countDocuments();
     this.orderNumber = `ZS${String(count + 1).padStart(6, '0')}`;
