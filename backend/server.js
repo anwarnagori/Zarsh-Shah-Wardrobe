@@ -15,6 +15,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import newsletterRoutes from "./routes/newsletterRoutes.js";
 import { notFound, errorHandler } from "./middlewares/error.js";
 
 dotenv.config();
@@ -66,6 +68,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 
 app.get("/api", (req, res) => {
   res.send("API is working fine ✅");

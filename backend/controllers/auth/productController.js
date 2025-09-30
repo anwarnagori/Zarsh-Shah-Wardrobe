@@ -22,12 +22,20 @@ export const getProducts = async (req, res) => {
       category,
       minPrice,
       maxPrice,
+      size,
+      color,
+      brand,
+      isFeatured,
       sort = '-createdAt'
     } = req.query;
 
     const filter = { status: 'active' };
     if (q) filter.$text = { $search: q };
     if (category) filter.category = category;
+    if (brand) filter.brand = brand;
+    if (isFeatured !== undefined) filter.isFeatured = isFeatured === 'true';
+    if (size) filter.sizes = { $in: [size] };
+    if (color) filter.colors = { $in: [color] };
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
@@ -81,5 +89,70 @@ export const deleteProduct = async (req, res) => {
     res.json({ message: 'Product deleted' });
   } catch (e) {
     res.status(400).json({ message: e.message });
+  }
+};
+
+// Get featured products
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    const { limit = 8 } = req.query;
+    const products = await Product.find({ 
+      status: 'active', 
+      isFeatured: true 
+    })
+    .sort({ createdAt: -1 })
+    .limit(Number(limit));
+    
+    res.json(products);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+
+// Get product filters (sizes, colors, brands)
+export const getProductFilters = async (req, res) => {
+  try {
+    const { category } = req.query;
+    const filter = { status: 'active' };
+    if (category) filter.category = category;
+
+    const [sizes, colors, brands] = await Promise.all([
+      Product.distinct('sizes', filter),
+      Product.distinct('colors', filter),
+      Product.distinct('brand', filter)
+    ]);
+
+    res.json({
+      sizes: sizes.filter(Boolean).sort(),
+      colors: colors.filter(Boolean).sort(),
+      brands: brands.filter(Boolean).sort()
+    });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+
+// Search suggestions
+export const getSearchSuggestions = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.length < 2) return res.json([]);
+
+    const products = await Product.find({
+      $text: { $search: q },
+      status: 'active'
+    })
+    .select('name category brand')
+    .limit(5);
+
+    const suggestions = products.map(p => ({
+      name: p.name,
+      category: p.category,
+      brand: p.brand
+    }));
+
+    res.json(suggestions);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
   }
 };

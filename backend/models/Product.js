@@ -13,7 +13,9 @@ const productSchema = new mongoose.Schema(
     colors: [{ type: String }],
     images: [{ type: String }],
     isFeatured: { type: Boolean, default: false },
-    status: { type: String, enum: ['active', 'inactive'], default: 'active' }
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    averageRating: { type: Number, default: 0, min: 0, max: 5 },
+    totalReviews: { type: Number, default: 0, min: 0 }
   },
   { timestamps: true }
 );

@@ -4,13 +4,19 @@ import {
   getProducts,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getFeaturedProducts,
+  getProductFilters,
+  getSearchSuggestions
 } from '../controllers/auth/productController.js';
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router.get('/', getProducts);
+router.get('/featured', getFeaturedProducts);
+router.get('/filters', getProductFilters);
+router.get('/search/suggestions', getSearchSuggestions);
 router.get('/:id', getProduct);
 
 router.post('/', protect, adminOnly, createProduct);
