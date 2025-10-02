@@ -1,4 +1,4 @@
-import Product from '../../models/Product.js';
+import Product from '../models/Product.js';
 
 export const createProduct = async (req, res) => {
   try {
@@ -156,3 +156,5 @@ export const getSearchSuggestions = async (req, res) => {
     res.status(500).json({ message: e.message });
   }
 };
+
+

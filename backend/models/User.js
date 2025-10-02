@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, minlength: 6 },
+    phone: { type: String, unique: true, sparse: true },
+    phoneVerified: { type: Boolean, default: false },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
 
     addresses: [{
@@ -24,6 +26,9 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Ensure there can only be ONE admin user in the collection
+userSchema.index({ role: 1 }, { unique: true, partialFilterExpression: { role: 'admin' } });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

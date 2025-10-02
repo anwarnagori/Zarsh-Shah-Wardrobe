@@ -7,6 +7,15 @@ export const createOrder = async (req, res) => {
   try {
     const { shippingAddress, paymentMethod, notes = '' } = req.body;
 
+    // Validate shipping fields
+    const requiredFields = [
+      'name','email','phone','address','city','state','postalCode','country'
+    ];
+    const missing = requiredFields.filter(f => !shippingAddress?.[f]);
+    if (missing.length) {
+      return res.status(400).json({ message: `Missing shipping fields: ${missing.join(', ')}` });
+    }
+
     // Get user's cart
     const cart = await Cart.findOne({ user: req.user._id })
       .populate('products.product');
