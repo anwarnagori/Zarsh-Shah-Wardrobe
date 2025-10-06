@@ -70,10 +70,14 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/newsletter", newsletterRoutes);
+import adminRoutes from "./routes/adminRoutes.js";
 
 app.get("/api", (req, res) => {
   res.send("API is working fine ✅");
 });
+
+app.use("/api/admin", adminRoutes);
+
 
 // 404 handler
 app.use(notFound);
