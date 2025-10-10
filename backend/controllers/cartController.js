@@ -57,14 +57,18 @@ export const addToCart = async (req, res) => {
         item.color === color
     );
 
+    const priceSnapshot = product.salePrice || product.price;
+
     if (existingItem) {
       existingItem.quantity += quantity;
+      existingItem.price = priceSnapshot;
     } else {
       cart.products.push({
         product: productId,
         quantity,
         size,
-        color
+        color,
+        price: priceSnapshot
       });
     }
 
@@ -104,6 +108,7 @@ export const updateCartItem = async (req, res) => {
     }
 
     item.quantity = quantity;
+    item.price = product.salePrice || product.price;
     await cart.save();
     await cart.populate('products.product', 'name price images brand category');
 

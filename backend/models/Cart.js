@@ -20,6 +20,12 @@ const cartSchema = new mongoose.Schema(
         min: 1,
         default: 1
       },
+      // Price snapshot to ensure totals are correct without population
+      price: {
+        type: Number,
+        required: true,
+        min: 0
+      },
       size: {
         type: String,
         default: ''
@@ -41,12 +47,10 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Calculate totals before saving
+// Calculate totals before saving using price snapshot
 cartSchema.pre('save', function (next) {
-  this.totalItems = this.products.reduce((total, item) => total + item.quantity, 0);
-  this.totalPrice = this.products.reduce((total, item) => {
-    return total + (item.product?.price || 0) * item.quantity;
-  }, 0);
+  this.totalItems = this.products.reduce((sum, item) => sum + item.quantity, 0);
+  this.totalPrice = this.products.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
   next();
 });
 

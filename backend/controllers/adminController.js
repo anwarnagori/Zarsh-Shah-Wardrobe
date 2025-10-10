@@ -9,8 +9,12 @@ const generateToken = (id) => {
 
 // ✅ Admin Sign Up
 export const registerAdmin = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, inviteToken } = req.body;
   try {
+    // Require an invite token for security; set ADMIN_INVITE_TOKEN in env
+    if (!inviteToken || inviteToken !== process.env.ADMIN_INVITE_TOKEN) {
+      return res.status(403).json({ message: "Invalid admin invite token" });
+    }
     const adminExists = await Admin.findOne({ email });
     if (adminExists) {
       return res.status(400).json({ message: "Admin already exists" });

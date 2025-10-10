@@ -103,14 +103,16 @@ export const deleteReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
 
-    const review = await Review.findOneAndDelete({
-      _id: reviewId,
-      user: req.user._id
-    });
+    // Fetch review first to recalculate ratings after removal
+    const review = await Review.findOne({ _id: reviewId, user: req.user._id });
 
     if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }
+
+    const productId = review.product;
+    await review.deleteOne();
+    await Review.calculateAverageRating(productId);
 
     res.json({ message: 'Review deleted successfully' });
   } catch (error) {
