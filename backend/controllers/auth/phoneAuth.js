@@ -1,5 +1,5 @@
 import OTP from '../../models/OTP.js';
-import User from '../../models/User.js';
+import User from '../../models/userModel.js';
 import makeToken from '../../utils/token.js';
 
 function generateOtpCode() {

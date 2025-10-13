@@ -1,4 +1,4 @@
-import User from "../../models/User.js";
+import User from "../../models/userModel.js";
 import sendEmail from "../../utils/sendEmail.js";
 import emailTemplate from "../../utils/emailTemplate.js";
 import makeToken from "../../utils/token.js";
