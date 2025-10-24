@@ -1,16 +1,33 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isAdminAuthenticated } from "@/utils/auth";
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAdminAuthenticated()) {
-      router.replace("/admin/login");
-    }
-  }, []);
+    // Wait a tiny bit so localStorage is ready
+    const timer = setTimeout(() => {
+      const token =
+        typeof window !== "undefined" && localStorage.getItem("adminToken");
+      if (!token) {
+        router.replace("/admin/login");
+      } else {
+        setLoading(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500 text-lg">Checking authentication...</p>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }
